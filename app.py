@@ -7,9 +7,12 @@ app = Flask(__name__)
 
 gitlab = Gitlab()
 
+command1 = "pwd"
+
 @app.route("/")
 def home():
-    results = gitlab.get_top_10()
+    results = gitlab.get()
+    # gitlab.run_command()
     username = results[0]['namespace']['name']
     return render_template("index.html",**locals())
 
@@ -18,6 +21,9 @@ def create():
     if request.method == "POST":
         domain = request.form["dname"]
         results = gitlab.create_project(domain)
+        gitlab.unprotect_main(domain)
+        gitlab.run_command()
+        gitlab.proetct_branches(domain)
         # print(results)
         repo_name = results['name']
         id = results['id']
