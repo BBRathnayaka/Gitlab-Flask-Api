@@ -11,7 +11,8 @@ headers = {
 
 class Gitlab:
     def get(self):
-        url = f"https://gitlab.com/api/v4/users/buddhitha/projects/"
+        # url = f"https://gitlab.com/api/v4/users/buddhitha/projects/"
+        url = f"https://gitlab.com/api/v4/groups/16002910/projects/"
         session = Session()
         session.headers.update(headers)
         response = session.get(url)
@@ -26,6 +27,14 @@ class Gitlab:
         data = json.loads(response.text)
         return data
     
+    def get_projects_info(self,project_id):
+        url = f"https://gitlab.com/api/v4/projects/{project_id}"
+        session = Session()
+        session.headers.update(headers)
+        response = session.get(url)
+        data = json.loads(response.text)
+        return data
+
     def create_group_project(self,name,group_id):
         parameters = {
             'name': {name},
@@ -69,26 +78,19 @@ class Gitlab:
         data = json.loads(response.text)
         return data
 
-    def unprotect_main(self,name):
-        url = f"https://gitlab.com/api/v4/projects/BBRathnayaka%2f{name}/protected_branches/main"
+    def unprotect_main(self,project_id):
+        url = f"https://gitlab.com/api/v4/projects/{project_id}/protected_branches/main"
         session = Session()
         session.headers.update(headers)
 
         response = session.delete(url)
-        return True
+        return response
 
-    def proetct_branches(self, name):
-        branches = ["main", "preview", "develop", "feature/*"]
-        # for i in branches:
-        # parameters = {
-        #     'name': {name},
-        #     'push_access_level': '40',
-        #     'merge_access_level': '40'
-        # }
-        main_url = f"https://gitlab.com/api/v4/projects/BBRathnayaka%2f{name}/protected_branches?name=main"
-        preview_url = f"https://gitlab.com/api/v4/projects/BBRathnayaka%2f{name}/protected_branches?name=preview"
-        develop_url = f"https://gitlab.com/api/v4/projects/BBRathnayaka%2f{name}/protected_branches?name=develop&push_access_level=40&merge_access_level=30"
-        feature_url = f"https://gitlab.com/api/v4/projects/BBRathnayaka%2f{name}/protected_branches?name=feature/*&push_access_level=30&merge_access_level=30"
+    def proetct_branches(self, project_id):
+        main_url = f"https://gitlab.com/api/v4/projects/{project_id}/protected_branches?name=main"
+        preview_url = f"https://gitlab.com/api/v4/projects/{project_id}/protected_branches?name=preview"
+        develop_url = f"https://gitlab.com/api/v4/projects/{project_id}/protected_branches?name=develop&push_access_level=40&merge_access_level=30"
+        feature_url = f"https://gitlab.com/api/v4/projects/{project_id}/protected_branches?name=feature/*&push_access_level=30&merge_access_level=30"
         session = Session()
         session.headers.update(headers)
 
@@ -99,13 +101,4 @@ class Gitlab:
         return True
 
     def demo(self,url):
-        # stdout = subprocess.run('bash /home/bbr/workspace/gitlab/script.sh',{url}, shell = True)
-        # stdout = subprocess.run('echo `date`',{url}, shell = True)
-        subprocess.run(['/home/bbr/workspace/gitlab/script.sh', url])
-
-
-    def run_command(self):
-        stdout = subprocess.run('rm -rf /home/bbr/workspace/gitlab/*', shell = True)
-        # stdout = subprocess.run('git clone git@gitlab.com:BBRathnayaka/sample.git --bare /home/bbr/workspace/gitlab/sample', shell = True)
-        # stdout = subprocess.run("cd /home/bbr/workspace/gitlab/sample && git push --mirror git@gitlab.com:BBRathnayaka/3.git", shell = True)
-    
+        subprocess.run(['/home/gitlab/workspace/gitlab/script.sh', url])

@@ -11,9 +11,6 @@ gitlab = Gitlab()
 @app.route("/")
 def home():
     results = gitlab.get()
-    gitlab.demo()
-    # gitlab.run_command()
-    # b = gitlab.get_branches()
     username = results[0]['namespace']['name']
     return render_template("index.html",**locals())
     # return jsonify(results)
@@ -22,9 +19,9 @@ def home():
 def help():
     return render_template("help.html",**locals())
 
-@app.route('/get/<path>', methods=['GET'])
-def get(path):
-    results = gitlab.get_group_projects(path)
+@app.route('/get/<project_id>', methods=['GET'])
+def get(project_id):
+    results = gitlab.get_projects_info(project_id)
     return jsonify(results)
 
 @app.route('/branches/<project_id>', methods=['GET'])
@@ -38,13 +35,25 @@ def create_group_project():
     Project_name  = request.args.get('Project_name', None)
     print(group_id)
     print(Project_name)
-    # return("Hello")
     results = gitlab.create_group_project(Project_name,group_id)
+
+    ### get id of the project and unprotect main branch
+    project_id = results['id']
+    print(project_id)
+    gitlab.unprotect_main(project_id)
+
+    ## run shell script
     url = results['ssh_url_to_repo']
     ssh_url = str(url)
     gitlab.demo(ssh_url)
     print(url)
-    return jsonify(results)
+
+    ## proetct branches
+    gitlab.proetct_branches(project_id)
+
+    ## return final project information
+    info = gitlab.get_projects_info(project_id)
+    return jsonify(info)
 
 @app.route("/create", methods=["POST", "GET"])
 def create():
