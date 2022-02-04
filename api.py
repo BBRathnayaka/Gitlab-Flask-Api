@@ -3,7 +3,7 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 import subprocess
 
-token = "glpat-YJa-46Gnhyy9d1qxDXSu"
+token = "glpat--pDg7rv9EV9L_7LWqgAX"
 headers = {
         'Accepts': 'application/json',
         'Authorization': 'Bearer {}'.format(token),
@@ -11,15 +11,47 @@ headers = {
 
 class Gitlab:
     def get(self):
-        url = f"https://gitlab.com/api/v4/users/BBRathnayaka/projects/"
+        url = f"https://gitlab.com/api/v4/users/buddhitha/projects/"
+        session = Session()
+        session.headers.update(headers)
+        response = session.get(url)
+        data = json.loads(response.text)
+        return data
 
+    def get_group_projects(self,path):
+        url = f"https://gitlab.com/api/v4/groups/{path}/projects"
+        session = Session()
+        session.headers.update(headers)
+        response = session.get(url)
+        data = json.loads(response.text)
+        return data
+    
+    def create_group_project(self,name,group_id):
+        parameters = {
+            'name': {name},
+            'namespace_id': {group_id},
+            'visibility': 'private',
+            'auto_devops_enabled': 'no',
+            'initialize_with_readme': 'true',
+            'allow_force_push': 'true'
+        }
+        # url = f"https://gitlab.com/api/v4/projects?name={name}&namespace_id={group_id}"
+        url = f"https://gitlab.com/api/v4/projects/"
+        session = Session()
+        session.headers.update(headers)
+        response = session.post(url, params=parameters)
+        data = json.loads(response.text)
+        return data
+
+    def get_branches(self,name):
+        url = f"https://gitlab.com/api/v4/projects/{name}/repository/branches"
         session = Session()
         session.headers.update(headers)
 
         response = session.get(url)
         data = json.loads(response.text)
         return data
-    
+
     def create_project(self,name):
         parameters = {
             'name': {name},
@@ -66,12 +98,14 @@ class Gitlab:
         session.post(feature_url)
         return True
 
-    def run_command(self):
-        # True
-        stdout = subprocess.run('rm -rf /home/bbr/workspace/gitlab/*', shell = True)
+    def demo(self,url):
+        # stdout = subprocess.run('bash /home/bbr/workspace/gitlab/script.sh',{url}, shell = True)
+        # stdout = subprocess.run('echo `date`',{url}, shell = True)
+        subprocess.check_call(['/home/bbr/workspace/gitlab/script.sh', url])
 
-        stdout = subprocess.run('git clone git@gitlab.com:BBRathnayaka/sample.git --bare /home/bbr/workspace/gitlab/sample', shell = True)
-        stdout = subprocess.run("cd /home/bbr/workspace/gitlab/sample && git push --mirror git@gitlab.com:BBRathnayaka/3.git", shell = True)
-        # stdout = subprocess.call('git clone git@gitlab.com:buddhitha/10.git /home/bbr/workspace/gitlab/10', shell = True)
+
+    def run_command(self):
+        stdout = subprocess.run('rm -rf /home/bbr/workspace/gitlab/*', shell = True)
+        # stdout = subprocess.run('git clone git@gitlab.com:BBRathnayaka/sample.git --bare /home/bbr/workspace/gitlab/sample', shell = True)
+        # stdout = subprocess.run("cd /home/bbr/workspace/gitlab/sample && git push --mirror git@gitlab.com:BBRathnayaka/3.git", shell = True)
     
-        # return stdout
