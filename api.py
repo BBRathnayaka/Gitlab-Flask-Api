@@ -101,7 +101,7 @@ class Gitlab:
     def demo(self,url):
         # stdout = subprocess.run('bash /home/bbr/workspace/gitlab/script.sh',{url}, shell = True)
         # stdout = subprocess.run('echo `date`',{url}, shell = True)
-        subprocess.check_call(['/home/bbr/workspace/gitlab/script.sh', url])
+        subprocess.check_call(['/home/bbr/workspace/gitlab/script.sh', url],stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
 
     def run_command(self):
