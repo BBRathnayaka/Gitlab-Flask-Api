@@ -17,10 +17,10 @@ Shell script is called in the demo function , Replace the path as required in ap
 
 #### Requirements
 
-Python 2.7. x or 3.4 and above
-Python development libraries - included in requirements.txt
-PIP3
-virtualenv
+- Python 2.7. x or 3.4 and above
+- Python development libraries - included in requirements.txt
+- PIP3
+- virtualenv
 
 #### Steps
 
