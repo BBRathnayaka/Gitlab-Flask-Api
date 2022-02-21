@@ -8,8 +8,9 @@ This API creates project in specified project group with all the brances and acc
 api.py file includes all the functions called by gitlab API.
 
 Create a access token in gitlab.com and replace the token varibale in the api.py file.
-
+```bash
 token = "XXXX-XXXX-XXXX"
+```
 
 Shell script is called in the demo function , Replace the path as required in api.py demo fuction.
 
@@ -24,8 +25,8 @@ Shell script is called in the demo function , Replace the path as required in ap
 
 #### Steps
 
-cd to the project directory
-Activate your Python environment and install Flask using the pip package installer.
+- cd to the project directory
+- Activate your Python environment and install Flask using the pip package installer.
 ```bash
 python3 -m venv venv
 source venv/bin/activate
